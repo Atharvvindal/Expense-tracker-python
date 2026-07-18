@@ -1,0 +1,113 @@
+from datetime import date, time, datetime
+import json
+file4 = "data1.json"
+with open (file4,"r") as file:
+    data1 = json.load(file)
+def addexp():
+    exp = input("Input your spent : ")
+    now = datetime.now()
+    exp_date = now.date()
+    exp_time =  now.strftime("%H:%M:%S")
+    data1[str(exp_time)] = {"date":str(exp_date),
+             "Expense":float(exp)}
+    with open (file4,"w") as file:
+      json.dump(data1,file,indent=4)
+def ste():
+    exp_date =str( datetime.now().date())
+    print("TODAY'S EXPENDITURE")
+    for time_key, details in data1.items():
+        if details["date"] == exp_date:
+            print(time_key,details["Expense"])
+def sdweftm():
+    print("DAY WISE EXPENDITURE FOR THE MONTH")
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+    day_totals = {}
+    for details in data1.values():
+        stored_date = datetime.strptime(details["date"], "%Y-%m-%d").date()
+        if stored_date.month == current_month and stored_date.year == current_year:
+            if details["date"] not in day_totals:
+                day_totals[details["date"]] = 0
+            day_totals[details["date"]] += details["Expense"]
+    for day, total in sorted(day_totals.items()):
+        print(f"{day} : ₹{total}")
+def stmte():
+    monthly_exp = 0
+    mon = datetime.now().date().month
+    year = datetime.now().date().year
+    for details in data1.values():
+        if (mon ==  datetime.strptime(details["date"], "%Y-%m-%d").date().month) and \
+            (year == datetime.strptime(details["date"], "%Y-%m-%d").date().year):
+            monthly_exp += details["Expense"]
+    print ("THIS MONTH YOU SPENT : ",'₹',monthly_exp)
+def styte():
+    yearly_exp = 0
+    year = datetime.now().date().year
+    for details in data1.values():
+        if year == datetime.strptime(details["date"], "%Y-%m-%d").date().year:
+            yearly_exp += details["Expense"]
+    print("YOU SPENT A TOTAL OF ",'₹',yearly_exp," THIS YEAR")
+def stetd():
+    total_exp = 0
+    for details in data1.values():
+        total_exp += details["Expense"]
+    print("TILL NOW YOU HAVE SPENT ",'₹',total_exp)
+def delete():
+    dat = input("Enter the date of spending : ")
+    try:
+        datetime.strptime(dat, "%Y-%m-%d")
+    except ValueError:
+        print("Invalid date format! Use YYYY-MM-DD.")
+        return
+    print(f"\nEXPENSES FOR {dat}")
+    print("-" * 30)
+    found = False
+    for time_key, details in data1.items():
+        if details["date"] == dat:
+            print(f"Time: {time_key} | Expense: ₹{details['Expense']}")
+            found = True
+    if not found:
+        print("No expenses found for this date.")
+    tim = input("Enter the time of spending from the list below :")
+    if tim  in data1 and data1[tim]["date"] == dat:
+        del data1[tim]
+        with open (file4,"w") as file:
+         json.dump(data1,file,indent=4)
+        print("EXPENSE DELETED SUCCESSFULLY !")
+    else:
+        print ("Expense not found")    
+while True:
+    print ("MONTHLY EXPENSE TRACKER")
+    opt = input("""what do you want to do ?
+* Add Your expense > 1
+* See Today's expense > 2
+* See day wise expense for the month > 3
+* See this month's total expenditure > 4
+* See this year's total expenditure > 5
+* See total expenditure till date > 6
+ Enter your Response : """)
+    if opt == '1':
+        addexp()
+    elif opt == '2':
+        ste()
+    elif opt == '3':
+        sdweftm()
+    elif opt == '4':
+        stmte()
+    elif opt == '5':
+        styte()
+    elif opt == '6':
+        stetd()
+    elif opt == 'DEL' or opt == 'del' or opt == 'd' or opt == 'D':
+        delete()
+    else:
+        print("Invalid option")
+        continue
+    cont = input ('Do you want to continue using the tracker yes/no : ').upper()
+    if cont == 'NO':
+        break
+    elif cont == 'YES':
+        continue
+    else:
+        print ("Type either yes /no ")
+        continue
