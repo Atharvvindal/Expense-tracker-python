@@ -104,8 +104,3 @@ Expenses are stored in a JSON file in the following format:
 
 Atharv Vindal
 
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
